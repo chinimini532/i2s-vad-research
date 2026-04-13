@@ -1,0 +1,4 @@
+model,n_params,best_val_loss,best_val_acc,epochs_trained,training_time_s,save_path
+cnn1d,124386,0.009472,1.0,17,9.3,C:\Users\USER\Desktop\i2s-vad-research\outputs\models\cnn1d_best.pt
+wavenet,175234,0.018446,0.9947,13,27.3,C:\Users\USER\Desktop\i2s-vad-research\outputs\models\wavenet_best.pt
+ecapa,242130,0.027704,0.9947,19,63.4,C:\Users\USER\Desktop\i2s-vad-research\outputs\models\ecapa_best.pt
