@@ -1,0 +1,4 @@
+model,accuracy,precision,recall,f1_macro,f1_noise,f1_speech,latency_ms,size_kb,n_params
+CNN1D,1.0,1.0,1.0,1.0,1.0,1.0,1.377,499.5,124386
+WaveNetSmall,1.0,1.0,1.0,1.0,1.0,1.0,3.13,717.5,175234
+ECAPAVAD,1.0,1.0,1.0,1.0,1.0,1.0,11.138,1003.6,242130
