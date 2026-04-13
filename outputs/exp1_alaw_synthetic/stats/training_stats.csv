@@ -1,0 +1,5 @@
+experiment,model,n_params,best_val_loss,best_val_acc,epochs_trained,training_time_s,use_alaw,use_musan,fraction
+exp1_alaw_synthetic,CNN1D,124386,0.006732,1.0,18,9.3,True,False,0.01
+exp1_alaw_synthetic,WaveNetSmall,175234,0.024313,0.9947,18,40.0,True,False,0.01
+exp1_alaw_synthetic,ECAPAVAD,242130,0.017595,0.9947,27,84.0,True,False,0.01
+exp1_alaw_synthetic,TransformerVAD,71458,0.425176,0.8723,50,23.5,True,False,0.01

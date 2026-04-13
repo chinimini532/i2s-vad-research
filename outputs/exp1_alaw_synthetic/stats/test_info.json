@@ -1,0 +1,12 @@
+{
+  "experiment": "exp1_alaw_synthetic",
+  "X_test_shape": [
+    188,
+    256
+  ],
+  "y_test_shape": [
+    188
+  ],
+  "use_alaw": true,
+  "use_musan": false
+}

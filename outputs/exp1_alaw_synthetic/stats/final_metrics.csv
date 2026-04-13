@@ -1,0 +1,5 @@
+experiment,model,accuracy,precision,recall,f1_macro,f1_noise,f1_speech,latency_ms,size_kb,n_params
+exp1_alaw_synthetic,CNN1D,1.0,1.0,1.0,1.0,1.0,1.0,1.405,499.8,124386
+exp1_alaw_synthetic,WaveNetSmall,0.9947,0.9947,0.9947,0.9947,0.9947,0.9947,3.149,718.4,175234
+exp1_alaw_synthetic,ECAPAVAD,1.0,1.0,1.0,1.0,1.0,1.0,8.68,1004.6,242130
+exp1_alaw_synthetic,TransformerVAD,0.8191,0.8197,0.8191,0.8191,0.8229,0.8152,1.699,293.6,71458
