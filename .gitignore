@@ -1,0 +1,25 @@
+# Data - too large for GitHub
+data/raw/
+data/processed/
+data/splits/
+
+# Saved models - too large
+outputs/models/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+venv/
+.venv/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# VS Code
+.vscode/settings.json
+
+# OS
+.DS_Store
+Thumbs.db
