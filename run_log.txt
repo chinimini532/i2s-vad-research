@@ -1,0 +1,56 @@
+[16:41:01] =================================================
+[16:41:01]   I2S VAD Research - Full Training Pipeline
+[16:41:01]   Started: 04/19/2026 16:41:01
+[16:41:01] =================================================
+[16:41:01] Checking GPU...
+[16:41:04] 
+[16:41:04] =================================================
+[16:41:04]   EXPERIMENT 2: Clean PCM + real MUSAN
+[16:41:04] =================================================
+[16:41:04] Switching to experiment: exp2_clean_musan
+[16:41:04] Config updated: EXPERIMENT = exp2_clean_musan, fraction = 1.0
+[16:41:04] Set fraction=1.0 for exp2_clean_musan
+[16:41:04] START: exp2 preprocess
+[16:59:38] DONE: exp2 preprocess (18.6 min)
+[16:59:38] START: exp2 split
+[16:59:44] DONE: exp2 split (0.1 min)
+[16:59:44] START: exp2 train all models
+[18:21:03] DONE: exp2 train all models (81.3 min)
+[18:21:03] 
+[18:21:03] =================================================
+[18:21:03]   EXPERIMENT 3: A-law + real MUSAN
+[18:21:03] =================================================
+[18:21:03] Switching to experiment: exp3_alaw_musan
+[18:21:03] Config updated: EXPERIMENT = exp3_alaw_musan, fraction = 1.0
+[18:21:03] Set fraction=1.0 for exp3_alaw_musan
+[18:21:03] START: exp3 preprocess
+[18:40:10] DONE: exp3 preprocess (19.1 min)
+[18:40:10] START: exp3 split
+[18:40:17] DONE: exp3 split (0.1 min)
+[18:40:17] START: exp3 train all models
+[20:02:39] DONE: exp3 train all models (82.4 min)
+[20:02:39] 
+[20:02:39] =================================================
+[20:02:39]   SILERO VAD BASELINE
+[20:02:39] =================================================
+[20:02:39] START: silero baseline evaluation
+[20:35:15] DONE: silero baseline evaluation (32.6 min)
+[20:35:15] 
+[20:35:15] Committing results to GitHub...
+[20:35:18] Pushed to GitHub.
+[20:35:18] 
+[20:35:18] =================================================
+[20:35:18]   ALL DONE
+[20:35:18]   Total time: 3.9 hours
+[20:35:18]   Finished: 04/19/2026 20:35:18
+[20:35:18] =================================================
+[20:35:18] 
+[20:35:18] Results saved:
+[20:35:18]   outputs/exp2_clean_musan/stats/final_metrics.csv
+[20:35:18]   outputs/exp3_alaw_musan/stats/final_metrics.csv
+[20:35:18]   outputs/silero_baseline/silero_results.csv
+[20:35:18] 
+[20:35:18] Next steps:
+[20:35:18]   1. Open notebooks/evaluation.ipynb
+[20:35:18]   2. Run for exp2, exp3, compare with Silero
+[20:35:18]   3. Share CSVs for paper writing
