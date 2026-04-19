@@ -3,13 +3,12 @@ src/training/train.py
 
 Trains all four models for the current experiment.
 Reads config from src/training/config.py
-Saves models and stats to outputs/{EXPERIMENT}/
+If outputs/{EXPERIMENT}/stats/best_params.json exists
+(from optuna_tune.py), uses those hyperparameters.
+Otherwise uses defaults from config.py.
 
-To run a different experiment:
-  1. Change EXPERIMENT in src/training/config.py
-  2. Run python src/data/preprocess.py
-  3. Run python src/data/split.py
-  4. Run python src/training/train.py
+Saves models to outputs/{EXPERIMENT}/models/
+Saves stats to outputs/{EXPERIMENT}/stats/
 """
 
 import sys
@@ -37,7 +36,7 @@ from src.models.transformer_vad import TransformerVAD
 
 
 # ─── Device ───────────────────────────────────────────────────────────────────
-def get_device() -> torch.device:
+def get_device():
     if torch.cuda.is_available():
         device = torch.device("cuda")
         print(f"  GPU : {torch.cuda.get_device_name(0)}")
@@ -45,6 +44,18 @@ def get_device() -> torch.device:
         device = torch.device("cpu")
         print("  CPU (no GPU detected)")
     return device
+
+
+# ─── Load best params from Optuna if available ────────────────────────────────
+def load_best_params():
+    params_path = STATS_DIR / "best_params.json"
+    if params_path.exists():
+        with open(str(params_path)) as f:
+            params = json.load(f)
+        print(f"  Loaded Optuna best params from {params_path}")
+        return params
+    print("  No Optuna params found. Using config defaults.")
+    return {}
 
 
 # ─── Data ─────────────────────────────────────────────────────────────────────
@@ -57,7 +68,9 @@ def load_splits():
     X_test  = np.load(str(SPLITS / "X_test.npy"))
     y_test  = np.load(str(SPLITS / "y_test.npy"))
 
-    print(f"  Train : {X_train.shape}  Val : {X_val.shape}  Test : {X_test.shape}")
+    print(f"  Train : {X_train.shape}")
+    print(f"  Val   : {X_val.shape}")
+    print(f"  Test  : {X_test.shape}")
 
     to_t = lambda x: torch.tensor(x, dtype=torch.float32)
     to_l = lambda y: torch.tensor(y, dtype=torch.long)
@@ -67,16 +80,17 @@ def load_splits():
             to_t(X_test),  to_l(y_test))
 
 
-def make_loaders(X_train, y_train, X_val, y_val):
-    bs = CFG["batch_size"]
-    train_loader = DataLoader(TensorDataset(X_train, y_train),
-                              batch_size=bs, shuffle=True,  num_workers=0)
-    val_loader   = DataLoader(TensorDataset(X_val, y_val),
-                              batch_size=bs, shuffle=False, num_workers=0)
+def make_loaders(X_train, y_train, X_val, y_val, batch_size):
+    train_loader = DataLoader(
+        TensorDataset(X_train, y_train),
+        batch_size=batch_size, shuffle=True, num_workers=0)
+    val_loader = DataLoader(
+        TensorDataset(X_val, y_val),
+        batch_size=batch_size, shuffle=False, num_workers=0)
     return train_loader, val_loader
 
 
-# ─── Train / validate one epoch ───────────────────────────────────────────────
+# ─── Train / validate ─────────────────────────────────────────────────────────
 def run_epoch(model, loader, optimizer, criterion, device, train=True):
     model.train() if train else model.eval()
     total_loss = total_correct = total_n = 0
@@ -101,19 +115,22 @@ def run_epoch(model, loader, optimizer, criterion, device, train=True):
 
 
 # ─── Train one model ──────────────────────────────────────────────────────────
-def train_model(name, model, train_loader, val_loader, device):
-    n_params  = sum(p.numel() for p in model.parameters() if p.requires_grad)
+def train_model(name, model, train_loader, val_loader,
+                device, lr, batch_size):
+    n_params = sum(p.numel() for p in model.parameters()
+                   if p.requires_grad)
     print(f"\n{'='*55}")
     print(f"  Model      : {name}")
     print(f"  Parameters : {n_params:,}")
+    print(f"  LR         : {lr}")
+    print(f"  Batch size : {batch_size}")
     print(f"{'='*55}")
 
     model     = model.to(device)
     criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=CFG["lr"])
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer, mode="min", factor=0.5, patience=3, verbose=False
-    )
+        optimizer, mode="min", factor=0.5, patience=3, verbose=False)
 
     best_val_loss  = float("inf")
     best_val_acc   = 0.0
@@ -125,9 +142,9 @@ def train_model(name, model, train_loader, val_loader, device):
 
     for epoch in range(1, CFG["max_epochs"] + 1):
         tr_loss, tr_acc = run_epoch(
-            model, train_loader, optimizer, criterion, device, train=True)
+            model, train_loader, optimizer, criterion, device, True)
         vl_loss, vl_acc = run_epoch(
-            model, val_loader,   optimizer, criterion, device, train=False)
+            model, val_loader, optimizer, criterion, device, False)
 
         scheduler.step(vl_loss)
 
@@ -156,6 +173,8 @@ def train_model(name, model, train_loader, val_loader, device):
                 "n_params":    n_params,
                 "history":     history,
                 "cfg":         CFG,
+                "lr":          lr,
+                "batch_size":  batch_size,
             }, str(save_path))
         else:
             patience_count += 1
@@ -169,9 +188,8 @@ def train_model(name, model, train_loader, val_loader, device):
     print(f"  Time          : {elapsed:.1f}s")
     print(f"  Saved         : {save_path}")
 
-    # save history
     hist_path = STATS_DIR / f"{name}_history.json"
-    with open(hist_path, "w") as f:
+    with open(str(hist_path), "w") as f:
         json.dump(history, f, indent=2)
 
     return {
@@ -185,6 +203,8 @@ def train_model(name, model, train_loader, val_loader, device):
         "use_alaw":        CFG["use_alaw"],
         "use_musan":       CFG["use_musan"],
         "fraction":        CFG["fraction"],
+        "lr":              lr,
+        "batch_size":      batch_size,
     }
 
 
@@ -192,19 +212,19 @@ def train_model(name, model, train_loader, val_loader, device):
 def main():
     print_config()
     torch.manual_seed(SEED)
-    device = get_device()
+    device      = get_device()
+    best_params = load_best_params()
 
     X_train, y_train, X_val, y_val, X_test, y_test = load_splits()
-    train_loader, val_loader = make_loaders(X_train, y_train, X_val, y_val)
 
-    # save test set for evaluation notebook
+    # save test info
     with open(str(STATS_DIR / "test_info.json"), "w") as f:
         json.dump({
-            "experiment":    EXPERIMENT,
-            "X_test_shape":  list(X_test.shape),
-            "y_test_shape":  list(y_test.shape),
-            "use_alaw":      CFG["use_alaw"],
-            "use_musan":     CFG["use_musan"],
+            "experiment":   EXPERIMENT,
+            "X_test_shape": list(X_test.shape),
+            "y_test_shape": list(y_test.shape),
+            "use_alaw":     CFG["use_alaw"],
+            "use_musan":    CFG["use_musan"],
         }, f, indent=2)
 
     models = [
@@ -215,21 +235,40 @@ def main():
     ]
 
     all_stats = []
+
     for name, model in models:
-        stats = train_model(name, model, train_loader, val_loader, device)
+        # use optuna best params if available, else config defaults
+        p          = best_params.get(name, {})
+        lr         = p.get("lr",         CFG["lr"])
+        batch_size = p.get("batch_size", CFG["batch_size"])
+
+        # apply dropout if tuned
+        if "dropout" in p:
+            for m in model.modules():
+                if isinstance(m, nn.Dropout):
+                    m.p = p["dropout"]
+
+        train_loader, val_loader = make_loaders(
+            X_train, y_train, X_val, y_val, batch_size)
+
+        stats = train_model(
+            name, model, train_loader, val_loader,
+            device, lr, batch_size)
         all_stats.append(stats)
 
-    df = pd.DataFrame(all_stats)
+    df       = pd.DataFrame(all_stats)
     csv_path = STATS_DIR / "training_stats.csv"
     df.to_csv(str(csv_path), index=False)
 
     print(f"\n{'='*55}")
-    print(f"  All models trained  |  Experiment: {EXPERIMENT}")
+    print(f"  All models trained  |  {EXPERIMENT}")
     print(f"{'='*55}")
     print(df[["model", "n_params", "best_val_acc",
-              "epochs_trained", "training_time_s"]].to_string(index=False))
+              "epochs_trained", "training_time_s",
+              "lr", "batch_size"]].to_string(index=False))
     print(f"\n  Stats : {csv_path}")
-    print(f"  Next  : open notebooks/evaluation.ipynb")
+    print(f"  Next  : python src/evaluation/silero_baseline.py")
+    print(f"  Then  : open notebooks/evaluation.ipynb")
 
 
 if __name__ == "__main__":

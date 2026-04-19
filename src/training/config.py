@@ -14,9 +14,9 @@ Experiments:
 from pathlib import Path
 
 # ─── Change this to switch experiments ────────────────────────────────────────
-EXPERIMENT = "exp1_alaw_synthetic"
-# EXPERIMENT = "exp2_clean_musan"
-# EXPERIMENT = "exp3_alaw_musan"
+#EXPERIMENT = "exp3_alaw_musan"
+EXPERIMENT = "exp3_alaw_musan"
+#EXPERIMENT = "exp3_alaw_musan"
 
 # ─── Experiment definitions ───────────────────────────────────────────────────
 EXPERIMENT_CONFIGS = {
@@ -25,10 +25,10 @@ EXPERIMENT_CONFIGS = {
         "description":  "A-law codec simulation + synthetic noise (test run)",
         "use_alaw":     True,       # apply A-law encode->decode roundtrip
         "use_musan":    False,      # False = use musan_synthetic folder
-        "fraction":     0.01,       # 1% of data  → LG Gram
+        "fraction":     1.0,       # 1% of data  → LG Gram
         "batch_size":   64,
         "lr":           1e-3,
-        "max_epochs":   50,
+        "max_epochs":   30,
         "patience":     7,
     },
 
@@ -39,7 +39,7 @@ EXPERIMENT_CONFIGS = {
         "fraction":     1.0,        # 100% of data → MSI
         "batch_size":   128,
         "lr":           1e-3,
-        "max_epochs":   50,
+        "max_epochs":   30,
         "patience":     7,
     },
 
@@ -50,7 +50,7 @@ EXPERIMENT_CONFIGS = {
         "fraction":     1.0,        # 100% of data → MSI
         "batch_size":   128,
         "lr":           1e-3,
-        "max_epochs":   50,
+        "max_epochs":   30,
         "patience":     7,
     },
 }
@@ -97,3 +97,7 @@ def print_config():
 
 if __name__ == "__main__":
     print_config()
+
+
+
+

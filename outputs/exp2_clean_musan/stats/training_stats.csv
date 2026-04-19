@@ -1,0 +1,5 @@
+experiment,model,n_params,best_val_loss,best_val_acc,epochs_trained,training_time_s,use_alaw,use_musan,fraction,lr,batch_size
+exp2_clean_musan,CNN1D,124386,0.357884,0.8444,30,448.5,False,True,1.0,0.001,128
+exp2_clean_musan,WaveNetSmall,175234,0.30459,0.875,26,1333.1,False,True,1.0,0.001,128
+exp2_clean_musan,ECAPAVAD,242130,0.284119,0.886,23,2588.3,False,True,1.0,0.001,128
+exp2_clean_musan,TransformerVAD,71458,0.458403,0.7839,30,500.1,False,True,1.0,0.001,128

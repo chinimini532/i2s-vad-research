@@ -165,7 +165,9 @@ def main():
     print(f"  -> {len(X_noise):,} noise windows")
 
     # ── balance + shuffle ─────────────────────────────────────────────────
-    min_count   = min(len(X_speech), len(X_noise))
+    MAX_WINDOWS = 200_000
+    min_count   = min(len(X_speech), len(X_noise), MAX_WINDOWS)
+    print(f"\n  Capping at {MAX_WINDOWS:,} windows per class")
     rng         = np.random.default_rng(seed=SEED)
     speech_idx  = rng.choice(len(X_speech), min_count, replace=False)
     noise_idx   = rng.choice(len(X_noise),  min_count, replace=False)
