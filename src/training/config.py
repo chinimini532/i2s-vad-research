@@ -38,8 +38,8 @@ EXPERIMENT_CONFIGS = {
         "use_musan":    True,       # use real MUSAN dataset
         "fraction":     1.0,        # 100% of data → MSI
         "batch_size":   128,
-        "lr":           1e-3,
-        "max_epochs":   30,
+        "lr":           0.0003,
+        "max_epochs":   50,
         "patience":     7,
     },
 
@@ -49,8 +49,8 @@ EXPERIMENT_CONFIGS = {
         "use_musan":    True,       # real MUSAN dataset
         "fraction":     1.0,        # 100% of data → MSI
         "batch_size":   128,
-        "lr":           1e-3,
-        "max_epochs":   30,
+        "lr":           0.0003,
+        "max_epochs":   50,
         "patience":     7,
     },
 }
