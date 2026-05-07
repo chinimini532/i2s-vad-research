@@ -1,3 +1,7 @@
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from src.utils.alaw_norm import AlawNorm
 """
 src/models/ecapa_vad.py
 
@@ -58,6 +62,7 @@ class SEBlock(nn.Module):
 
     def __init__(self, channels: int, reduction: int = 8):
         super().__init__()
+        self.alaw_norm = AlawNorm()
         self.squeeze    = nn.AdaptiveAvgPool1d(1)
         self.excitation = nn.Sequential(
             nn.Flatten(),
@@ -68,6 +73,7 @@ class SEBlock(nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = self.alaw_norm(x) 
         # x: (batch, channels, time)
         s = self.squeeze(x)                          # (batch, channels, 1)
         e = self.excitation(s)                       # (batch, channels)

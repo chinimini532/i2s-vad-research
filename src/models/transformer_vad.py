@@ -1,3 +1,7 @@
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from src.utils.alaw_norm import AlawNorm
 """
 src/models/transformer_vad.py
 
@@ -81,6 +85,7 @@ class TransformerVAD(nn.Module):
                  ff_dim:       int = 128,
                  dropout:      float = 0.1):
         super().__init__()
+        self.alaw_norm = AlawNorm()
 
         self.patch_embed = PatchEmbedding(window_size, patch_size, embed_dim)
         n_patches        = window_size // patch_size
@@ -132,6 +137,7 @@ class TransformerVAD(nn.Module):
                     nn.init.zeros_(m.bias)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = self.alaw_norm(x)
         """
         x shape: (batch, 256)
         returns: (batch, num_classes)

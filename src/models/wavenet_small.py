@@ -1,3 +1,7 @@
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from src.utils.alaw_norm import AlawNorm
 """
 src/models/wavenet_small.py
 
@@ -51,6 +55,7 @@ class DilatedResBlock(nn.Module):
 
     def __init__(self, channels: int, dilation: int):
         super().__init__()
+        self.alaw_norm = AlawNorm()
 
         self.conv = nn.Sequential(
             nn.Conv1d(
@@ -72,6 +77,7 @@ class DilatedResBlock(nn.Module):
         self.relu = nn.ReLU()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = self.alaw_norm(x)
         return self.relu(self.conv(x) + x)   # residual connection
 
 
