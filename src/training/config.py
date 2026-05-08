@@ -8,7 +8,7 @@ Change EXPERIMENT variable to switch between experiments.
 from pathlib import Path
 
 # ─── Change this to switch experiments ────────────────────────────────────────
-EXPERIMENT = "exp2_clean_demand"
+EXPERIMENT = "exp2_clean_musan"
 # EXPERIMENT = "exp3_alaw_demand"
 
 # ─── Experiment definitions ───────────────────────────────────────────────────
@@ -49,6 +49,30 @@ EXPERIMENT_CONFIGS = {
         "max_epochs":   50,
         "patience":     7,
     },
+
+    "exp2_clean_musan": {
+        "description":  "Clean PCM (no A-law) + real MUSAN noise (baseline)",
+        "use_alaw":     False,
+        "use_musan":    True,
+        "use_demand":   False,
+        "fraction":     1.0,
+        "batch_size":   128,
+        "lr":           0.0003,
+        "max_epochs":   50,
+        "patience":     7,
+    },
+
+    "exp3_alaw_musan": {
+        "description":  "A-law codec simulation + real MUSAN (main contribution)",
+        "use_alaw":     True,
+        "use_musan":    True,
+        "use_demand":   False,
+        "fraction":     1.0,
+        "batch_size":   128,
+        "lr":           0.0003,
+        "max_epochs":   50,
+        "patience":     7,
+    },
 }
 
 # ─── Paths ────────────────────────────────────────────────────────────────────
@@ -79,7 +103,7 @@ def print_config():
     print(f"  Experiment : {EXPERIMENT}")
     print(f"  Description: {CFG['description']}")
     print(f"  A-law      : {CFG['use_alaw']}")
-    print(f"  DEMAND     : {CFG.get('use_demand', False)}")
+    print(f"  MUSAN     : {CFG.get('use_musan', False)}")
     print(f"  Fraction   : {CFG['fraction']*100:.1f}%")
     print(f"  Batch size : {CFG['batch_size']}")
     print(f"  LR         : {CFG['lr']}")

@@ -139,11 +139,16 @@ def main():
     # ── speech (label=1) ──────────────────────────────────────────────────
     print("\n[1/2] Processing speech files...")
     speech_windows = []
+    MAX_WINDOWS = 200_000
+    total_speech = 0
     for fp in tqdm(speech_files, desc="Speech"):
+        if total_speech >= MAX_WINDOWS:
+            break
         try:
             w = process_file(fp, SOURCE_SR, use_alaw=CFG["use_alaw"])
             if len(w) > 0:
                 speech_windows.append(w)
+                total_speech += len(w)
         except Exception as e:
             print(f"  [warn] {fp.name}: {e}")
 
@@ -156,8 +161,6 @@ def main():
     noise_windows = []
     for fp in tqdm(noise_files, desc="Noise"):
         try:
-            # noise files are already at various sample rates
-            # soundfile reads correct sr automatically
             w = process_file(fp, TARGET_SR, use_alaw=False)
             if len(w) > 0:
                 noise_windows.append(w)
