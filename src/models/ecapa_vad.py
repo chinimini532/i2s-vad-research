@@ -62,7 +62,6 @@ class SEBlock(nn.Module):
 
     def __init__(self, channels: int, reduction: int = 8):
         super().__init__()
-        self.alaw_norm = AlawNorm()
         self.squeeze    = nn.AdaptiveAvgPool1d(1)
         self.excitation = nn.Sequential(
             nn.Flatten(),
@@ -73,7 +72,6 @@ class SEBlock(nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x = self.alaw_norm(x) 
         # x: (batch, channels, time)
         s = self.squeeze(x)                          # (batch, channels, 1)
         e = self.excitation(s)                       # (batch, channels)
@@ -175,6 +173,7 @@ class ECAPAVAD(nn.Module):
 
     def __init__(self, num_classes: int = 2, channels: int = 128):
         super().__init__()
+        self.alaw_norm = AlawNorm()
 
         # initial conv
         self.input_conv = nn.Sequential(
@@ -212,6 +211,7 @@ class ECAPAVAD(nn.Module):
         x shape: (batch, 256)
         returns: (batch, num_classes)
         """
+        x = self.alaw_norm(x)
         x  = x.unsqueeze(1)                # (batch, 1, 256)
         x  = self.input_conv(x)            # (batch, C, 256)
 

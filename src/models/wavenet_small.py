@@ -55,7 +55,6 @@ class DilatedResBlock(nn.Module):
 
     def __init__(self, channels: int, dilation: int):
         super().__init__()
-        self.alaw_norm = AlawNorm()
 
         self.conv = nn.Sequential(
             nn.Conv1d(
@@ -77,7 +76,6 @@ class DilatedResBlock(nn.Module):
         self.relu = nn.ReLU()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x = self.alaw_norm(x)
         return self.relu(self.conv(x) + x)   # residual connection
 
 
@@ -85,6 +83,7 @@ class WaveNetSmall(nn.Module):
 
     def __init__(self, num_classes: int = 2):
         super().__init__()
+        self.alaw_norm = AlawNorm()
 
         # initial projection: 1 channel -> 64 channels
         self.input_conv = nn.Sequential(
@@ -128,6 +127,7 @@ class WaveNetSmall(nn.Module):
         x shape: (batch, 256)
         returns: (batch, num_classes)
         """
+        x = self.alaw_norm(x)
         x = x.unsqueeze(1)              # (batch, 1, 256)
         x = self.input_conv(x)          # (batch, 64, 256)
         x = self.res_blocks(x)          # (batch, 64, 256)
