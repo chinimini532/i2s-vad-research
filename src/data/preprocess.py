@@ -100,17 +100,21 @@ def get_speech_files() -> list:
 
 
 def get_noise_files() -> list:
-    if CFG["use_musan"]:
-        musan_dir = RAW / "musan"
-        if not musan_dir.exists():
-            raise FileNotFoundError(
-                "Real MUSAN not found. Run download.py --mode full first."
-            )
-        all_files = sorted(musan_dir.rglob("*.wav"))
+    if CFG.get("use_demand", False):
+        noise_dir = RAW / "demand"
+        if not noise_dir.exists():
+            raise FileNotFoundError("DEMAND not found.")
+        all_files = sorted(noise_dir.rglob("*.wav"))
+        label     = "DEMAND"
+    elif CFG["use_musan"]:
+        noise_dir = RAW / "musan"
+        if not noise_dir.exists():
+            raise FileNotFoundError("MUSAN not found.")
+        all_files = sorted(noise_dir.rglob("*.wav"))
         label     = "MUSAN (real)"
     else:
-        musan_dir = RAW / "musan_synthetic"
-        all_files = sorted(musan_dir.rglob("*.wav"))
+        noise_dir = RAW / "musan_synthetic"
+        all_files = sorted(noise_dir.rglob("*.wav"))
         label     = "musan_synthetic"
 
     if not all_files:
