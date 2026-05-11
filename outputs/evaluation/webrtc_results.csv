@@ -1,0 +1,5 @@
+model,aggressiveness,acc_clean,f1_clean,acc_alaw,f1_alaw
+WebRTC_VAD_agg0,0,0.5,0.3333,0.5,0.3333
+WebRTC_VAD_agg1,1,0.5,0.3333,0.4999,0.3333
+WebRTC_VAD_agg2,2,0.4992,0.333,0.4992,0.333
+WebRTC_VAD_agg3,3,0.4914,0.3305,0.4914,0.3305
