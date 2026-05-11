@@ -1,0 +1,5 @@
+model,mean_ms,std_ms,size_kb,realtime_ok,realtime_limit
+CNN1D,0.307,0.011,488.2,True,32.0
+WaveNetSmall,0.764,0.032,686.3,True,32.0
+ECAPAVAD,2.334,0.066,960.4,True,32.0
+TransformerVAD,0.466,0.024,343.6,True,32.0
