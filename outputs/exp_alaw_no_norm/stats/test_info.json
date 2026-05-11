@@ -1,0 +1,12 @@
+{
+  "experiment": "exp_alaw_no_norm",
+  "X_test_shape": [
+    60000,
+    256
+  ],
+  "y_test_shape": [
+    60000
+  ],
+  "use_alaw": true,
+  "use_musan": true
+}

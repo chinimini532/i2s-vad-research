@@ -1,0 +1,12 @@
+{
+  "experiment": "exp2_clean_musan",
+  "X_test_shape": [
+    60000,
+    256
+  ],
+  "y_test_shape": [
+    60000
+  ],
+  "use_alaw": false,
+  "use_musan": true
+}

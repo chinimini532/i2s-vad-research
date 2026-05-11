@@ -1,3 +1,7 @@
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from src.utils.alaw_norm import AlawNorm
 """
 src/models/speechbrain_vad.py
 
@@ -65,6 +69,7 @@ class SpeechBrainVAD(nn.Module):
 
     def __init__(self, num_classes: int = 2):
         super().__init__()
+        self.alaw_norm = AlawNorm()    
 
         # load pretrained ECAPA-TDNN from SpeechBrain
         print("  Loading pretrained SpeechBrain ECAPA-TDNN...")
@@ -90,6 +95,7 @@ class SpeechBrainVAD(nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = self.alaw_norm(x) 
         """
         x: (batch, 256) raw audio windows at 8kHz
         """
