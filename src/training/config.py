@@ -73,6 +73,32 @@ EXPERIMENT_CONFIGS = {
         "max_epochs":   50,
         "patience":     7,
     },
+
+    "exp_clean_no_alaw": {
+    "description":  "Clean PCM + No AlawNorm (pure baseline)",
+    "use_alaw":     False,
+    "use_musan":    True,
+    "use_demand":   False,
+    "use_alaw_norm": False,
+    "fraction":     1.0,
+    "batch_size":   128,
+    "lr":           0.0003,
+    "max_epochs":   50,
+    "patience":     7,
+    },
+
+    "exp_alaw_no_norm": {
+        "description":  "A-law data + No AlawNorm",
+        "use_alaw":     True,
+        "use_musan":    True,
+        "use_demand":   False,
+        "use_alaw_norm": False,
+        "fraction":     1.0,
+        "batch_size":   128,
+        "lr":           0.0003,
+        "max_epochs":   50,
+        "patience":     7,
+    },
 }
 
 # ─── Paths ────────────────────────────────────────────────────────────────────
