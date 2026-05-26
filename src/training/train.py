@@ -37,13 +37,24 @@ from src.models.transformer_vad import TransformerVAD
 
 # ─── Device ───────────────────────────────────────────────────────────────────
 def get_device():
+    # Try DirectML (Intel Arc / AMD / any Windows GPU)
+    try:
+        import torch_directml
+        device = torch_directml.device()
+        print(f"  GPU : Intel Arc (DirectML)")
+        return device
+    except ImportError:
+        pass
+
+    # Try CUDA (NVIDIA)
     if torch.cuda.is_available():
         device = torch.device("cuda")
         print(f"  GPU : {torch.cuda.get_device_name(0)}")
-    else:
-        device = torch.device("cpu")
-        print("  CPU (no GPU detected)")
-    return device
+        return device
+
+    # Fallback CPU
+    print("  CPU (no GPU detected)")
+    return torch.device("cpu")
 
 
 # ─── Load best params from Optuna if available ────────────────────────────────
