@@ -1,0 +1,5 @@
+model,own_test_acc,alaw_acc,alaw_f1,drop
+CNN1D,0.9776,0.9126,0.9123,0.0651
+WaveNetSmall,0.9882,0.944,0.9439,0.0442
+ECAPAVAD,0.9904,0.9569,0.9569,0.0335
+TransformerVAD,0.9553,0.8853,0.8849,0.07

@@ -1,0 +1,13 @@
+{
+  "n_samples": 115880,
+  "duration_s": 14.48,
+  "byte_match_pct": 100.0,
+  "kl_divergence": 0.0,
+  "ks_statistic": 0.0,
+  "ks_p_value": 1.0,
+  "rtp_pcm_mean": 0.000302,
+  "rtp_pcm_std": 0.002318,
+  "sim_pcm_mean": 0.000302,
+  "sim_pcm_std": 0.002318,
+  "conclusion": "EQUIVALENT"
+}
